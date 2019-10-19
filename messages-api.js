@@ -7,7 +7,10 @@ const port = process.env.PORT || 3000;
 app
   .use(bodyParser.json())
   .post("/messages", (req, res) => {
-    console.log(req.body);
+    console.log(`REQ BODY IS ${req.body}`); // Req Body is [object Object]
+    if (!req.body.text || req.body.text === "") {
+      res.status(400).end();
+    }
     res.json({
       message: "Message received loud and clear"
     });
