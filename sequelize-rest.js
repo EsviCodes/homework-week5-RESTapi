@@ -1,9 +1,13 @@
+const express = require("express");
+const bodyParser = require("body-parser");
 const Sequelize = require("sequelize");
 
 const databaseUrl =
   process.env.DATABASE_URL ||
   "postgres://postgres:secret@localhost:5432/postgres";
 
+const app = express();
+const port = 4000;
 const db = new Sequelize(databaseUrl);
 
 // Define Data Model Movie
@@ -18,7 +22,7 @@ db.sync()
     //console.log("Database schema updated");
 
     // Example Data
-    // Instead of using the create() method which I have to apply three times, I chose to use the method bulkCreate() to insert three rows at once.
+    // Instead of using the create() method, which I have to apply three times, I chose to use the method bulkCreat() to insert three rows at once.
     Movie.bulkCreate([
       {
         title: "Beauty and the Beast",
@@ -40,4 +44,28 @@ db.sync()
       }
     ]);
   })
-  .catch(console.error);
+  .catch(err => {
+    console.error("Unable to create tables, shutting down...", err);
+    process.exit(1);
+  });
+
+// Middleware
+app.use(bodyParser.json());
+
+// Create a new movie resource
+app.post("/movies", (req, res, next) => {
+  Movie.create(req.body)
+    .then(movie => res.json(movie))
+    .catch(next);
+});
+
+// Read all movies
+app.get("/movies", (req, res, next) => {
+  Movie.findAll()
+    .then(movies => {
+      res.json(movies);
+    })
+    .catch(next);
+});
+
+app.listen(port, () => console.log("listening on port " + port));
