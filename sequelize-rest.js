@@ -2,15 +2,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Sequelize = require("sequelize");
 
-const databaseUrl =
-  process.env.DATABASE_URL ||
-  "postgres://postgres:secret@localhost:5432/postgres";
+const databaseUrl = "postgres://postgres:secret@localhost:5432/postgres";
 
 const app = express();
 const port = 4000;
 const db = new Sequelize(databaseUrl);
 
-// Define Data Model Movie
+// Define Data Model - Movie
 const Movie = db.define("movie", {
   title: Sequelize.TEXT,
   yearOfRelease: Sequelize.INTEGER,
@@ -57,7 +55,7 @@ app.post("/movies", (req, res, next) => {
     .catch(next);
 });
 
-// Read all movies
+// Read all movies without pagination - Left in as a comment for evaluation
 // app.get("/movies", (req, res, next) => {
 //   Movie.findAll()
 //     .then(movies => {
