@@ -68,4 +68,47 @@ app.get("/movies", (req, res, next) => {
     .catch(next);
 });
 
+// Read a single movie resource
+app.get("/movies/:id", (req, res, next) => {
+  Movie.findByPk(req.params.id)
+    .then(movie => {
+      if (movie) {
+        res.json(movie);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch(next);
+});
+
+// Update a single movie resource
+app.put("/movies/:id", (req, res, next) => {
+  Movie.findByPk(req.params.id)
+    .then(movie => {
+      if (movie) {
+        movie.update(req.body).then(movie => res.json(movie));
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch(next);
+});
+
+// Delete a single movie resource
+app.delete("/movies/:id", (req, res, next) => {
+  Movie.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(numDeleted => {
+      if (numDeleted) {
+        res.status(204).end();
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch(next);
+});
+
 app.listen(port, () => console.log("listening on port " + port));
