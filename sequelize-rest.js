@@ -60,12 +60,22 @@ app.post("/movies", (req, res, next) => {
 });
 
 // Read all movies
+// app.get("/movies", (req, res, next) => {
+//   Movie.findAll()
+//     .then(movies => {
+//       res.json(movies);
+//     })
+//     .catch(next);
+// });
+
+// Read all movies with pagination (limit set on 10 movies)
 app.get("/movies", (req, res, next) => {
-  Movie.findAll()
-    .then(movies => {
-      res.json(movies);
-    })
-    .catch(next);
+  const limit = req.query.limit || 10;
+  const offset = req.query.offset || 0;
+
+  Movie.findAndCountAll({ limit, offset })
+    .then(result => res.send({ movies: result.rows, total: result.count }))
+    .catch(error => next(error));
 });
 
 // Read a single movie resource
