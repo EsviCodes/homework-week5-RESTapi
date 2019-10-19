@@ -19,10 +19,8 @@ const Movie = db.define("movie", {
 
 db.sync()
   .then(() => {
-    //console.log("Database schema updated");
-
     // Example Data
-    // Instead of using the create() method, which I have to apply three times, I chose to use the method bulkCreat() to insert three rows at once.
+    // Instead of using the create() method, which I have to apply three times, I chose to use the method bulkCreate() to insert three rows at once.
     Movie.bulkCreate([
       {
         title: "Beauty and the Beast",
